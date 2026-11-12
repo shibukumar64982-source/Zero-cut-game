@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+< lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZERO CUT</title>
+<style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  padding: 15px;
+  background: linear-gradient(
+    145deg, #080b1c, #171039, #091c35
+  );
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 25px 0;
+}
+
+header h1 {
+  font-size: 38px;
+  letter-spacing: 5px;
+}
+
+header h1 span {
+  color: #a855f7;
+}
+
+header p {
+  color: #38bdf8;
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-top: 8px;
+}
+
+.panel {
+  background: rgba(255,255,255,.07);
+  border: 1px solid #51417e;
+  border-radius: 15px;
+  padding: 18px;
+  margin: 15px 0;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-info h3 {
+  color: #38bdf8;
+  margin: 9px 0;
+  overflow-wrap: anywhere;
+}
+
+small {
+  color: #a78bfa;
+}
+
+.small-btn {
+  padding: 11px;
+  background: #7c3aed;
+  color: white;
+  border: 0;
+  border-radius: 8px;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+nav button {
+  flex: 1;
+  padding: 13px 4px;
+  color: white;
+  background: #242044;
+  border: 1px solid #6750a4;
+  border-radius: 9px;
+}
+
+h2 {
+  text-align: center;
+  color: #c4b5fd;
+  margin: 22px 0;
+}
+
+h3 {
+  margin-bottom: 14px;
+}
+
+.main-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg,#7c3aed,#2563eb);
+}
+
+.back-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  color: white;
+  background: #29243e;
+  border: 1px solid #62538c;
+  border-radius: 9px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: #0d1025;
+  border: 1px solid #6750a4;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+  font-size: 15px;
+}
+
+input::placeholder {
+  color: #aaa2c2;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.room-label {
+  text-align: center;
+  color: #a78bfa;
+  margin-top: 18px;
+}
+
+.score {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px;
+  color: #38bdf8;
+}
+
+#status {
+  text-align: center;
+  color: #c4b5fd;
+  margin: 20px 0;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 9px;
+  max-width: 340px;
+  margin: 20px auto;
+}
+
+.cell {
+  aspect-ratio: 1;
+  background: #211b40;
+  border: 2px solid #7651c9;
+  border-radius: 12px;
+  color: #38bdf8;
+  font-size: 45px;
+  font-weight: bold;
+}
+
+.cell:active {
+  background: #44316f;
+}
+
+.messages {
+  height: 220px;
+  overflow-y: auto;
+  background: #0d1025;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.messages p {
+  margin-bottom: 12px;
+  overflow-wrap: anywhere;
+}
+
+.send-row {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.send-row input {
+  min-width: 0;
+}
+
+.send-row button {
+  margin-top: 12px;
+  padding: 14px;
+  color: white;
+  background: #7c3aed;
+  border: 0;
+  border-radius: 8px;
+}
+
+#searchResult, #roomStatus, #callStatus {
+  margin-top: 15px;
+  color: #38bdf8;
+  overflow-wrap: anywhere;
+}
+
+footer {
+  text-align: center;
+  padding: 30px 10px;
+  margin-top: 35px;
+  border-top: 1px solid #51417e;
+}
+
+footer h3 {
+  color: #a855f7;
+  letter-spacing: 3px;
+  margin-top: 12px;
+}
+
+.copyright {
+  color: #888;
+  font-size: 11px;
+  margin-top: 20px;
+}
+
+</style>
+</head>
+<>
+
+<header>
+  <h1>ZERO <span>CUT</span></h1>
+  <p>PLAY • CONNECT • WIN</p>
+</header>
+
+<!-- PLAYER PROFILE -->
+<div class="profile panel">
+  <div class="profile-info">
+    <small>PLAYER NAME</small>
+    <h3 id="playerNameDisplay">Loading...</h3>
+
+    <input id="playerNameInput"
+      maxlength="20"
+      placeholder="Enter your player name">
+
+    <button class="small-btn" onclick="savePlayerName()">
+      SAVE NAME
+    </button>
+
+    <br><br>
+
+    <small>YOUR 12 DIGIT PLAYER ID</small>
+    <h3 id="userId">Loading...</h3>
+  </div>
+
+  <button class="small-btn" onclick="copyId()">COPY ID</button>
+</div>
+
+<nav>
+  <button onclick="showPage('home')">HOME</button>
+  <button onclick="showPage('friends')">FRIENDS</button>
+  <button onclick="showPage('chat')">CHAT</button>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+  <h2>GAME LOBBY</h2>
+
+  <div class="panel">
+    <h3>PLAY GAME</h3>
+    <button class="main-btn" onclick="startGame()">
+      PASS & PLAY
+    </button>
+    <button class="main-btn" onclick="onlineMatch()">
+      ONLINE MATCH
+    </button>
+  </div>
+
+  <div class="panel">
+    <h3>PRIVATE ROOM</h3>
+    <button class="main-btn" onclick="createRoom()">
+      CREATE ROOM
+    </button>
+
+    <p class="room-label">YOUR ROOM CODE</p>
+    <h2 id="roomCode">----------</h2>
+
+    <input id="joinCode"
+      maxlength="10"
+      inputmode="numeric"
+      placeholder="Enter 10 digit room code">
+
+    <button class="main-btn" onclick="joinRoom()">
+      JOIN ROOM
+    </button>
+    <p id="roomStatus"></p>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="page">
+  <h2>ZERO CUT ARENA</h2>
+
+  <div class="score">
+    <div>PLAYER X <b id="scoreX">0</b></div>
+    <div>PLAYER O <b id="scoreO">0</b></div>
+  </div>
+
+  <h3 id="status">PLAYER X TURN</h3>
+
+  <div class="board">
+    <button class="cell" onclick="play(0)"></button>
+    <button class="cell" onclick="play(1)"></button>
+    <button class="cell" onclick="play(2)"></button>
+    <button class="cell" onclick="play(3)"></button>
+    <button class="cell" onclick="play(4)"></button>
+    <button class="cell" onclick="play(5)"></button>
+    <button class="cell" onclick="play(6)"></button>
+    <button class="cell" onclick="play(7)"></button>
+    <button class="cell" onclick="play(8)"></button>
+  </div>
+
+  <button class="main-btn" onclick="restartGame()">
+    RESTART GAME
+  </button>
+
+  <button class="back-btn" onclick="showPage('home')">
+    BACK TO LOBBY
+  </button>
+</section>
+
+<!-- FRIENDS -->
+<section id="friends" class="page">
+  <h2>FIND FRIENDS</h2>
+
+  <div class="panel">
+    <h3>SEARCH PLAYER</h3>
+
+    <input id="searchId"
+      maxlength="12"
+      inputmode="numeric"
+      placeholder="Enter 12 digit Player ID">
+
+    <button class="main-btn" onclick="searchFriend()">
+      SEARCH FRIEND
+    </button>
+
+    <p id="searchResult">Find friends using their Player ID.</p>
+  </div>
+
+  <div class="panel">
+    <h3>MY FRIENDS</h3>
+    <div id="friendList">No friends added yet.</div>
+  </div>
+</section>
+
+<!-- CHAT -->
+<section id="chat" class="page">
+  <h2>MESSAGES</h2>
+
+  <div class="panel">
+    <h3>CHAT WITH FRIEND</h3>
+
+    <input id="chatFriend"
+      maxlength="12"
+      inputmode="numeric"
+      placeholder="Friend's 12 digit ID">
+
+    <div id="messages" class="messages">
+      <p>ZERO CUT CHAT</p>
+      <small>Choose a friend to start chatting.</small>
+    </div>
+
+    <div class="send-row">
+      <input id="messageInput"
+        maxlength="500"
+        placeholder="Write a message...">
+
+      <button onclick="sendMessage()">SEND</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>VOICE CALL</h3>
+    <p>Talk with your friends.</p>
+
+    <button class="main-btn" onclick="voiceCall()">
+      CALL FRIEND
+    </button>
+
+    <p id="callStatus">
+      Voice calling needs online integration.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>FOUNDER OF ZERO CUT</p>
+  <h3>SHIVAM KUMAR</h3>
+  <small>PLAY • CONNECT • WIN</small>
+  <p class="copyright">© 2026 ZERO CUT. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script>
+
+// =================================
+// ZERO CUT - MAIN JAVASCRIPT
+// =================================
+
+// PLAYER ID SYSTEM
+
+
+function generateID() {
+  return String(
+    Math.floor(
+      100000000000 +
+      Math.random() * 900000000000
+    )
+  );
+}
+
+
+let userId = localStorage.getItem("zeroCutID");
+
+if (!userId || !/^\d{12}$/.test(userId)) {
+  userId = generateID();
+  localStorage.setItem("zeroCutID", userId);
+}
+
+document.getElementById("userId").textContent = userId;
+
+
+// PLAYER NAME SYSTEM
+
+let playerName =
+  localStorage.getItem("zeroCutName") || "";
+
+document.getElementById("playerNameDisplay").textContent =
+  playerName || "SET YOUR NAME";
+
+document.getElementById("playerNameInput").value =
+  playerName;
+
+function savePlayerName() {
+  const name =
+    document.getElementById("playerNameInput")
+    .value.trim();
+
+  if (!name) {
+    alert("Please enter your player name!");
+    return;
+  }
+
+  playerName = name;
+
+  localStorage.setItem("zeroCutName", name);
+
+  document.getElementById("playerNameDisplay")
+    .textContent = name;
+
+  alert("Player name saved successfully!");
+}
+
+
+// COPY PLAYER ID
+
+function copyId() {
+  if (navigator.clipboard &&
+      window.isSecureContext) {
+    navigator.clipboard.writeText(userId)
+      .then(() => alert("Player ID copied!"))
+      .catch(() => alert("Your ID: " + userId));
+  } else {
+    alert("Your Player ID: " + userId);
+  }
+}
+
+
+// PAGE NAVIGATION
+
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(p => {
+    p.classList.remove("active");
+  });
+
+  document.getElementById(page).classList.add("active");
+}
+
+
+// TIC TAC TOE GAME
+
+let board = ["","","","","","","","",""];
+let currentPlayer = "X";
+let gameOver = false;
+
+let scoreX = 0;
+let scoreO = 0;
+
+const cells = document.querySelectorAll(".cell");
+
+const wins = [
+  [0,1,2],
+  [3,4,5],
+  [6,7,8],
+  [0,3,6],
+  [1,4,7],
+  [2,5,8],
+  [0,4,8],
+  [2,4,6]
+];
+
+function startGame() {
+  restartGame();
+  showPage("game");
+}
+
+function play(index) {
+  if (gameOver || board[index] !== "") {
+    return;
+  }
+
+  board[index] = currentPlayer;
+  cells[index].textContent = currentPlayer;
+
+  if (checkWinner()) {
+    gameOver = true;
+
+    if (currentPlayer === "X") {
+      scoreX++;
+    } else {
+      scoreO++;
+    }
+
+    document.getElementById("scoreX").textContent =
+      scoreX;
+
+    document.getElementById("scoreO").textContent =
+      scoreO;
+
+    document.getElementById("status").textContent =
+      "PLAYER " + currentPlayer + " WINS!";
+
+    return;
+  }
+
+  if (!board.includes("")) {
+    gameOver = true;
+
+    document.getElementById("status").textContent =
+      "MATCH DRAW!";
+
+    return;
+  }
+
+  currentPlayer =
+    currentPlayer === "X" ? "O" : "X";
+
+  document.getElementById("status").textContent =
+    "PLAYER " + currentPlayer + " TURN";
+}
+
+function checkWinner() {
+  return wins.some(combo =>
+    combo.every(index =>
+      board[index] === currentPlayer
+    )
+  );
+}
+
+function restartGame() {
+  board = ["","","","","","","","",""];
+
+  currentPlayer = "X";
+  gameOver = false;
+
+  cells.forEach(cell => {
+    cell.textContent = "";
+  });
+
+  document.getElementById("status").textContent =
+    "PLAYER X TURN";
+}
+
+
+// PRIVATE ROOM SYSTEM - LOCAL DEMO
+
+let roomCode = "";
+
+function createRoom() {
+  roomCode = "";
+
+  for (let i = 0; i < 10; i++) {
+    roomCode += Math.floor(Math.random() * 10);
+  }
+
+  document.getElementById("roomCode").textContent =
+    roomCode;
+
+  document.getElementById("roomStatus").textContent =
+    "Room created on this device. Share the code for future online integration.";
+
+  alert("Your Room Code: " + roomCode);
+}
+
+function joinRoom() {
+  const code =
+    document.getElementById("joinCode").value.trim();
+
+  if (!/^\d{10}$/.test(code)) {
+    alert("Enter a valid 10 digit room code!");
+    return;
+  }
+
+  document.getElementById("roomStatus").textContent =
+    "Code entered: " + code +
+    ". Online room connection is not connected yet.";
+}
+
+
+// ONLINE MATCH
+
+function onlineMatch() {
+  alert(
+    "ONLINE MATCH\n\n" +
+    "Multiplayer server integration is required."
+  );
+}
+
+
+// FRIEND SEARCH - DEMO
+
+function searchFriend() {
+  const id =
+    document.getElementById("searchId").value.trim();
+
+  const result =
+    document.getElementById("searchResult");
+
+  if (!/^\d{12}$/.test(id)) {
+    result.textContent =
+      "Please enter a valid 12 digit Player ID.";
+    return;
+  }
+
+  if (id === userId) {
+    result.textContent =
+      "This is your own Player ID!";
+    return;
+  }
+
+  result.textContent =
+    "Player ID: " + id +
+    " entered. Connect a user database to find this player.";
+}
+
+
+// CHAT - LOCAL DEMO
+
+function sendMessage() {
+  const friend =
+    document.getElementById("chatFriend").value.trim();
+
+  const input =
+    document.getElementById("messageInput");
+
+  const messages =
+    document.getElementById("messages");
+
+  const message = input.value.trim();
+
+  if (!/^\d{12}$/.test(friend)) {
+    alert("Enter your friend's 12 digit ID!");
+    return;
+  }
+
+  if (!message) {
+    alert("Please write a message!");
+    return;
+  }
+
+  const msg = document.createElement("p");
+
+  msg.textContent =
+    (playerName || "YOU") + ": " + message;
+
+  messages.appendChild(msg);
+
+  input.value = "";
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+
+// VOICE CALL - DEMO
+
+function voiceCall() {
+  document.getElementById("callStatus").textContent =
+    "Voice calling requires WebRTC and an online signaling server.";
+
+  alert(
+    "Voice Call is not connected yet.\n" +
+    "Online voice integration is required."
+  );
+}
+
+
+</script>
+</body>
+</html>
+
+
+
+  
